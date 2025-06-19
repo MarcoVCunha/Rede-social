@@ -3,6 +3,8 @@ const User = require("../models/User"); // Import the User model to interact wit
 const bcrypt = require("bcryptjs"); // Import bcryptjs for hashing passwords
 const jwt = require("jsonwebtoken"); // Import jsonwebtoken for generating JWT tokens
 
+const mongoose = require("mongoose")
+
 const jwtSecret = process.env.JWT_SECRET; // Get the JWT secret from environment variables
 
 // Generete user token
@@ -77,14 +79,76 @@ const login = async (req, res) => {
 
 // Get current logged in user
 const getCurrentUser = async (req, res) => {
-    const user = req.user;
+  const user = req.user;
+
+  res.status(200).json(user);
+}; // Get the current user from the request object, which is populated by authentication middleware
+
+// update an user
+const update = async (req, res) => {
+  
+  const { name, password, bio } = req.body
+
+  let profileImage = null
+
+  if(req.file){
+    profile = req.file.filename
+  }
+
+  const user = await User.findById(req.user._id).select("-password");
+
+  if(name){
+    user.name = name
+  }
+
+  if(password){
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    user.password = passwordHash
+  }
+
+  if(profileImage) {
+    user.profileImage = profileImage
+  }
+
+  if(bio) {
+    user.bio = bio
+  }
+
+  await user.save()
+
+  res.status(200).json(user)
+};
+
+// Get user by id
+const getUserById = async(req, res) => {
+
+  const {id} = req.params
+
+  try {
+    
+    const user = await User.findById(id).select("-password");
+
+    //check if user exists
+    if(!user) {
+      res.status(404).json({errors: ["Usuário não encontrado 2."]})
+      return;
+    }
 
     res.status(200).json(user);
-} // Get the current user from the request object, which is populated by authentication middleware
 
+    } catch (error) {
+      res.status(404).json({errors: ["Usuário não encontrado."]})
+      return;
+    }
+
+}
 
 module.exports = {
   register,
   login,
   getCurrentUser,
+  update,
+  getUserById,
 }; // Export the register function to be used in routes or other parts of the application

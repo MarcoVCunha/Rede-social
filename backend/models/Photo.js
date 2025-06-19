@@ -6,7 +6,7 @@ const photoSchema = new Schema({
     title: String,
     likes: Array,
     comments: Array,
-    userId: mongoose.objectId, // referência ao usuário que enviou a foto
+    userId: Schema.Types.ObjectId, // referência ao usuário que enviou a foto
     userName: String,
 }, {
     timestamps: true // adiciona createdAt e updatedAt automaticamente
