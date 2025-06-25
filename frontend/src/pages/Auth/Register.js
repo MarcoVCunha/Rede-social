@@ -52,7 +52,7 @@ const Register = () => {
           type="password"
           placeholder="Confirme a senha"
           onChange={(e) => setConfirmPassword(e.target.value)}
-          value={confirmPassword || ''}
+          value={confirmPassword || ""}
         />
         <input type="submit" value="Cadastrar" />
       </form>
