@@ -32,6 +32,27 @@ export const register = createAsyncThunk(
   }
 );
 
+// Logout an user
+export const logout = createAsyncThunk("auth/logout", async () => {
+  await authService.logout();
+});
+
+// sign in an user
+export const login = createAsyncThunk(
+  "auth/login", // Nome da ação (usado internamente pelo Redux)
+  async (user, thunkAPI) => {
+    // user: dados do formulário | thunkAPI: utilitários do Redux
+    const data = await authService.login(user); // Chama a API para registrar o usuário
+
+    // Check for errors
+    if (data.errors) {
+      return thunkAPI.rejectWithValue(data.errors[0]); // Passa o erro para o reducer
+    }
+
+    return data;
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth", // Nome do slice (prefixo para as ações geradas)
   initialState, // Estado inicial definido acima
@@ -45,20 +66,44 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    // Quando a requisição de registro estiver em andamento (pending)
+      // Quando a requisição de registro estiver em andamento (pending)
       .addCase(register.pending, (state) => {
         state.loading = true; // Mostra loading
-        state.error = false;  // Limpa erro anterior (se houver)
+        state.error = false; // Limpa erro anterior (se houver)
       })
-       // Quando a requisição for concluída com sucesso (fulfilled)
+      // Quando a requisição for concluída com sucesso (fulfilled)
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false; // Finaliza o loading
         state.success = true; // Marca como sucesso
-        state.error = null;  // Limpa erros
+        state.error = null; // Limpa erros
         state.user = action.payload; // Armazena os dados do usuário retornado pela API
       })
-       // Quando a requisição falhar (rejected)
+      // Quando a requisição falhar (rejected)
       .addCase(register.rejected, (state, action) => {
+        state.loading = false; // Finaliza o loading
+        state.error = action.payload; // Salva o erro recebido da API
+        state.user = null; // Garante que o estado do usuário fique nulo
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.loading = false; // Finaliza o loading
+        state.success = true; // Marca como sucesso
+        state.error = null; // Limpa erros
+        state.user = null; // Não tem mais o state do usuário na store
+      })
+      // Quando a requisição de login estiver em andamento (pending)
+      .addCase(login.pending, (state) => {
+        state.loading = true; // Mostra loading
+        state.error = false; // Limpa erro anterior (se houver)
+      })
+      // Quando a requisição for concluída com sucesso (fulfilled)
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false; // Finaliza o loading
+        state.success = true; // Marca como sucesso
+        state.error = null; // Limpa erros
+        state.user = action.payload; // Armazena os dados do usuário retornado pela API
+      })
+      // Quando a requisição falhar (rejected)
+      .addCase(login.rejected, (state, action) => {
         state.loading = false; // Finaliza o loading
         state.error = action.payload; // Salva o erro recebido da API
         state.user = null; // Garante que o estado do usuário fique nulo
