@@ -27,52 +27,46 @@ const EditProfile = () => {
 
   //Load user data
   useEffect(() => {
-    dispatch(profile());
+    dispatch(profile()); // Dispara a ação que busca os dados do usuário logado
   }, [dispatch]);
 
   //Fill form with user data
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setEmail(user.email);
-      setBio(user.bio);
+      setName(user.name); // Define o nome no estado local
+      setEmail(user.email); // Define o email no estado local
+      setBio(user.bio); // Define a bio no estado local
     }
   }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //Gather user data from states
+    // Prepara os dados do usuário a serem enviados
     const userData = {
-        name,
-    }
-
-    if(profileImage) {
-        userData.profileImage = profileImage
-    }
-
-    if(bio) {
-        userData.bio = bio
-    }
-
-    if(password) {
-        userData.password = password
-    }
+      name,
+      bio,
+      password,
+      profileImage,
+    };
 
     // build form data
-    const formData = new FormData()
+    const formData = new FormData();
 
-    const userFormData = Object.keys(userData).forEach((key) => {
-  formData.append(key, userData[key])
-})
-    formData.append("user", userFormData)
+    // Adiciona ao FormData apenas os campos preenchidos
+    Object.keys(userData).forEach((key) => {
+      // Evita campos vazios
+      if (userData[key]) {
+        formData.append(key, userData[key]); // Adiciona o campo ao FormData
+      }
+    });
 
-    await dispatch(updateProfile(userFormData))
+     // Dispara a ação para atualizar o perfil com os dados do FormData
+    await dispatch(updateProfile(formData));
 
     setTimeout(() => {
-        dispatch(resetMessage())
-    }, 2000)
-
+      dispatch(resetMessage());
+    }, 2000);
   };
 
   const handleFile = (e) => {
@@ -90,10 +84,9 @@ const EditProfile = () => {
       <p className="subtitle">
         Adicione uma imagem de perfil e conte mais sobre você...
       </p>
-      {/*Preview da imagem*/}
       {(user.profileImage || previewImage) && (
         <img
-        className="profile-image"
+          className="profile-image"
           src={
             previewImage
               ? URL.createObjectURL(previewImage)

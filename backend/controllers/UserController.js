@@ -92,7 +92,7 @@ const update = async (req, res) => {
   let profileImage = null
 
   if(req.file){
-    profile = req.file.filename
+    profileImage = req.file.filename
   }
 
   const user = await User.findById(req.user._id).select("-password");

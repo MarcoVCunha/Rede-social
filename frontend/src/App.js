@@ -15,12 +15,13 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import EditProfile from "./pages/EditProfile/EditProfile";
+import Pro from "./pages/Profile/Pro";
 
 function App() {
   const { auth, loading } = useAuth();
 
   if (loading) {
-    return <p>Carregando</p>;
+    return <p>Carregando...</p>;
   }
 
   return (
@@ -36,6 +37,10 @@ function App() {
             <Route
               path="/profile"
               element={auth ? <EditProfile /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/users/:id"
+              element={auth ? <Pro/> : <Navigate to="/login" />}
             />
             <Route
               path="/login"
