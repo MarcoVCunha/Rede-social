@@ -94,9 +94,13 @@ const Pro = () => {
 
   // Delete a photo
   const handleDelete = (id) => {
-    dispatch(deletePhoto(id));
-
-    resetComponentMessage();
+    const confirmDelete = window.confirm(
+      "Tem certeza que deseja deletar esta foto?"
+    );
+    if (confirmDelete) {
+      dispatch(deletePhoto(id));
+      resetComponentMessage();
+    }
   };
 
   // Show or hide forms
@@ -208,14 +212,14 @@ const Pro = () => {
                 )}
                 {id === userAuth._id ? (
                   <div className="actions">
-                    <Link to={`/photo/${photo._id}`}>
+                    <Link to={`/photos/${photo._id}`}>
                       <BsFillEyeFill />
                     </Link>
                     <BsPencilFill onClick={() => handleEdit(photo)} />
                     <BsXLg onClick={() => handleDelete(photo._id)} />
                   </div>
                 ) : (
-                  <Link className="btn" to={`/photo/${photo._id}`}>
+                  <Link className="btn" to={`/photos/${photo._id}`}>
                     Ver
                   </Link>
                 )}
