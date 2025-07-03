@@ -76,11 +76,9 @@ const Pro = () => {
     //build form data
     const formData = new FormData();
 
-    const photoFormData = Object.keys(photoData).forEach((key) =>
-      formData.append(key, photoData[key])
-    );
-
-    formData.append("photo", photoFormData);
+    Object.keys(photoData).forEach((key) => {
+      formData.append(key, photoData[key]);
+    });
 
     dispatch(publishUserPhoto(formData));
 
@@ -149,7 +147,7 @@ const Pro = () => {
           <p>{user.bio}</p>
         </div>
       </div>
-      {id === userAuth._id && (
+      {userAuth && id === userAuth._id && (
         <>
           <div className="new-photo" ref={newPhotoForm}>
             <h3>Compartilhe algum momento seu:</h3>
@@ -207,7 +205,7 @@ const Pro = () => {
                     alt={photo.title}
                   />
                 )}
-                {id === userAuth._id ? (
+                {userAuth && id === userAuth._id ? (
                   <div className="actions">
                     <Link to={`/photos/${photo._id}`}>
                       <BsFillEyeFill />
