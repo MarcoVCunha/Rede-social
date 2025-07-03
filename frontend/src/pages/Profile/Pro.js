@@ -11,6 +11,7 @@ import { BsFillEyeFill, BsPencilFill, BsXLg } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useResetComponentMessage } from "../../hooks/UseResetComponentMessage";
 
 // Redux
 import { getUserDetails } from "../../slices/userSlice";
@@ -26,6 +27,8 @@ const Pro = () => {
   const { id } = useParams();
 
   const dispatch = useDispatch();
+
+  const resetComponentMessage = useResetComponentMessage(dispatch);
 
   const { user, loading } = useSelector((state) => state.user);
   const { user: userAuth } = useSelector((state) => state.auth);
@@ -60,12 +63,6 @@ const Pro = () => {
     const image = e.target.files[0];
 
     setImage(image);
-  };
-
-  const resetComponentMessage = () => {
-    setTimeout(() => {
-      dispatch(resetMessage());
-    }, 2000);
   };
 
   const submitHandle = (e) => {
