@@ -17,6 +17,7 @@ import Register from "./pages/Auth/Register";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import Pro from "./pages/Profile/Pro";
 import Photo from "./pages/Photo/Photo";
+import Search from "./pages/Search/Search";
 
 function App() {
   const { auth, loading } = useAuth();
@@ -34,6 +35,10 @@ function App() {
             <Route
               path="/"
               element={auth ? <Home /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/search"
+              element={auth ? <Search /> : <Navigate to= "/login" />}
             />
             <Route
               path="/profile"
